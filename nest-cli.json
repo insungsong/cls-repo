@@ -1,8 +1,8 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/nest-project/src",
+  "sourceRoot": "apps/gateway/src",
   "monorepo": true,
-  "root": "apps/nest-project",
+  "root": "apps/gateway",
   "compilerOptions": {
     "webpack": true,
     "tsConfigPath": "apps/gateway/tsconfig.app.json"
@@ -33,6 +33,15 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "database": {
+      "type": "library",
+      "root": "libs/database",
+      "entryFile": "index",
+      "sourceRoot": "libs/database/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/database/tsconfig.lib.json"
       }
     }
   }
