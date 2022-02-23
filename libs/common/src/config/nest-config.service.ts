@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IsEnum } from 'class-validator';
 import { LoggerOptions } from 'typeorm';
+import { OpUnitType } from 'dayjs';
 
 export enum Environment {
   DEFAULT = '',
@@ -69,6 +70,38 @@ export class NestConfigService {
     return this.configService.get<LoggerOptions>(
       'DB_DEBUG',
       <LoggerOptions>'error',
+    );
+  }
+
+  get accessTokenExprieTimeValue(): number {
+    return this.configService.get<number>(
+      'ACCESS_TOKEN_EXPIRE_TIME_VALUE',
+      500,
+    );
+  }
+
+  get accessTokenExpireTimeUnit(): OpUnitType {
+    return this.configService.get<OpUnitType>(
+      'ACCESS_TOKEN_EXPIRE_TIME_UNIT',
+      'minute',
+    );
+  }
+
+  get refreshTokenExprieTimeValue(): number {
+    return this.configService.get<number>('REFRESH_TOKEN_EXPIRE_TIME_VALUE', 1);
+  }
+
+  get refreshTokenExpireTimeUnit(): OpUnitType {
+    return this.configService.get<OpUnitType>(
+      'REFRESH_TOKEN_EXPIRE_TIME_UNIT',
+      <OpUnitType>'month',
+    );
+  }
+
+  get jwtSecret(): string {
+    return this.configService.get<string>(
+      'JWT_SECRET',
+      '9rHWkauFqOM192f02oGh2-qmw2yXfn1rBRHTvfrNaL4',
     );
   }
 }
