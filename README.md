@@ -20,6 +20,6 @@ $ nest start gateway --watch
 $ nest start authentication --watch
 ```
 
-#### env에 대한 부분은 개인적인 연락 바랍니다.
+#### env에 대한 부분은 개인적인 연락 바랍니다!
 
 ##### song22861@naver.com
