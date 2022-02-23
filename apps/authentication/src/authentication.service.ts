@@ -119,6 +119,10 @@ export class AuthenticationService {
       throw new NestException(ErrorCode.DUPLICATE_EMAIL);
     }
 
+    if (input.password !== input.passwordConfirm) {
+      throw new NestException(ErrorCode.NOT_DUPLICATE_PASSWORD);
+    }
+
     user = userRepository.create({
       email: input.email,
       password: await argon2.hash(input.password),

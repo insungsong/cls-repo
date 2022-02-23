@@ -6,6 +6,8 @@
 
 ## 프로젝트 실행 순서
 
+#### 🤔 docker 프로그램 자체는 desktop에 실행시킨 상태여야합니다!
+
 ```bash
 
 $ docker-compose up
@@ -20,6 +22,12 @@ $ nest start gateway --watch
 $ nest start authentication --watch
 ```
 
-#### env에 대한 부분은 개인적인 연락 바랍니다!
+#### 위 실행 과정을 완료하시고, 문제가 발생하지 않는다면 아래 URL로 접속하세요 :)
 
-##### song22861@naver.com
+👉 [http://localhost:3000/v1/graphql]
+<br/>
+<br/>
+
+#### 그밖에 env에 대한 부분은 개인적인 연락 바랍니다!
+
+👉 [song22861@naver.com]
