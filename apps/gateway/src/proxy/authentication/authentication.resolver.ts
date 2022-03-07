@@ -1,11 +1,13 @@
-import { SayHelloInput } from '@libs/common/dto';
+import { ServiceType } from '@libs/common/constant';
 import { AuthenticationInput } from '@libs/common/dto/authentication.input';
 import { RegisterUserInput } from '@libs/common/dto/register-user.input';
-import { NestException, SayHelloOuput } from '@libs/common/model';
+import { NestException } from '@libs/common/model';
 import { AuthenticationOutput } from '@libs/common/model/authentication.model';
 import { RegisterUserOutput } from '@libs/common/model/register-user.output';
+import { UserEntity } from '@libs/database/entities';
 import { Logger } from '@nestjs/common';
 import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
+import { ScopedAuth } from '../../decorator/scoped-auth.decorator';
 import { AuthenticationProxyService } from './authentication.proxy.service';
 
 @Resolver('authentication')
@@ -18,14 +20,9 @@ export class AuthenticationResolver {
     this.logger = new Logger('AuthenticationResolver');
   }
 
-  @Query(() => SayHelloOuput)
-  async sayHello(@Args('input') input: SayHelloInput) {
-    return await this.authenticationService.sayHello(input);
-  }
-
   @Query(() => AuthenticationOutput, {
     name: 'authenticate',
-    description: '카파 유저 통합 로그인',
+    description: '유저 로그인',
   })
   async authenticate(
     @Args({
@@ -52,5 +49,13 @@ export class AuthenticationResolver {
   ): Promise<RegisterUserOutput> {
     this.logger.debug(input);
     return await this.authenticationService.registerUser(input);
+  }
+
+  @ScopedAuth([ServiceType.USER])
+  @Query(() => UserEntity)
+  async findByUser(@Args('userId') userId: string): Promise<UserEntity> {
+    this.logger.debug(userId);
+
+    return await this.authenticationService.findByUser(userId);
   }
 }

@@ -1,15 +1,13 @@
 import { NestConfigService } from '@libs/common/config/nest-config.service';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { getMetadataArgsStorage } from 'typeorm';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      useFactory: (
-        config: NestConfigService,
-      ): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions => ({
-        type: 'postgres',
+      useFactory: (config: NestConfigService) => ({
+        type: 'mysql',
         host: config.dbHost,
         port: config.dbPort,
         username: config.dbUsername,

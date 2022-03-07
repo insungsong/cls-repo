@@ -1,6 +1,5 @@
-import { ErrorCode } from '@libs/common/constant/error-code';
-import { ServiceType } from '@libs/common/constant/service-type';
-import { NestException } from '@libs/common/model/exception.model';
+import { ErrorCode } from '@libs/common/constant';
+import { NestException } from '@libs/common/model';
 import {
   CanActivate,
   ExecutionContext,
@@ -9,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { ServiceType } from 'aws-sdk/clients/ec2';
 
 @Injectable()
 export class ScopeAuthGuard implements CanActivate {
@@ -23,13 +23,6 @@ export class ScopeAuthGuard implements CanActivate {
       default:
         throw new NestException(ErrorCode.ERROR, 7829);
     }
-  }
-
-  matchScopes(scopes: ServiceType[], userScopes: ServiceType[]): boolean {
-    if (userScopes == null) return false;
-    return userScopes.some(
-      (userScope) => scopes.find((scope) => scope === userScope) != undefined,
-    );
   }
 
   canActivate(context: ExecutionContext): boolean {
@@ -49,5 +42,12 @@ export class ScopeAuthGuard implements CanActivate {
       }
     }
     return true;
+  }
+
+  matchScopes(scopes: ServiceType[], userScopes: ServiceType[]): boolean {
+    if (userScopes == null) return false;
+    return userScopes.some(
+      (userScope) => scopes.find((scope) => scope === userScope) != undefined,
+    );
   }
 }

@@ -6,6 +6,7 @@ import { RegisterUserInput, SayHelloInput } from '@libs/common/dto';
 import { NestException, RegisterUserOutput } from '@libs/common/model';
 import { AuthenticationInput } from '@libs/common/dto/authentication.input';
 import { AuthenticationOutput } from '@libs/common/model/authentication.model';
+import { UserEntity } from '@libs/database/entities';
 
 @Injectable()
 export class AuthenticationProxyService {
@@ -13,12 +14,6 @@ export class AuthenticationProxyService {
 
   constructor(@Inject('AUTHENTICATION_SERVICE') private client: ClientProxy) {
     this.logger = new Logger('AuthenticationProxyService');
-  }
-
-  async sayHello(input: SayHelloInput) {
-    return await lastValueFrom(
-      this.client.send<SayHelloOuput>({ cmd: 'sayHello' }, input),
-    );
   }
 
   async authenticate(
@@ -41,6 +36,14 @@ export class AuthenticationProxyService {
     this.logger.debug(input);
     return await lastValueFrom(
       this.client.send<RegisterUserOutput>({ cmd: 'registerUser' }, input),
+    );
+  }
+
+  async findByUser(userId: string): Promise<UserEntity> {
+    this.logger.debug(userId);
+
+    return await lastValueFrom(
+      this.client.send<UserEntity>({ cmd: 'findByUser' }, userId),
     );
   }
 }

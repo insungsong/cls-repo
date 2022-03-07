@@ -7,11 +7,13 @@ import {
 } from '@libs/common/config/nest-config.service';
 import { NestConfigModule } from '@libs/common/config/nest-config.module';
 import { ProxyModule } from './proxy/proxy.module';
+import { StrategyModule } from './strategy/strategy.module';
 
 @Module({
   imports: [
     ProxyModule,
     NestConfigModule,
+    StrategyModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: (config: NestConfigService) => ({

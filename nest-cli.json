@@ -43,6 +43,33 @@
       "compilerOptions": {
         "tsConfigPath": "libs/database/tsconfig.lib.json"
       }
+    },
+    "file": {
+      "type": "application",
+      "root": "apps/file",
+      "entryFile": "main",
+      "sourceRoot": "apps/file/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/file/tsconfig.app.json"
+      }
+    },
+    "post": {
+      "type": "application",
+      "root": "apps/post",
+      "entryFile": "main",
+      "sourceRoot": "apps/post/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/post/tsconfig.app.json"
+      }
+    },
+    "space": {
+      "type": "application",
+      "root": "apps/space",
+      "entryFile": "main",
+      "sourceRoot": "apps/space/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/space/tsconfig.app.json"
+      }
     }
   }
 }

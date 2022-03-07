@@ -7,6 +7,7 @@ import { RegisterUserOutput } from '@libs/common/model';
 import { TransactionBlock } from '@libs/common/transaction/transaction';
 import { AuthenticationInput } from '@libs/common/dto/authentication.input';
 import { AuthenticationOutput } from '@libs/common/model/authentication.model';
+import { UserEntity } from '@libs/database/entities';
 
 @Controller()
 export class AuthenticationController {
@@ -30,6 +31,11 @@ export class AuthenticationController {
         );
       },
     );
+  }
+
+  @MessagePattern({ cmd: 'findByUser' })
+  async findByUser(@Payload() userId: string): Promise<UserEntity> {
+    return await this.authenticationService.findByUser(userId);
   }
 
   @MessagePattern({ cmd: 'authenticate' })

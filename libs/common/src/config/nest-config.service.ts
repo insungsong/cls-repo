@@ -7,6 +7,7 @@ import { OpUnitType } from 'dayjs';
 export enum Environment {
   DEFAULT = '',
   LOCAL = 'local',
+  PRODUCTION = 'PRODUCTION',
 }
 
 @Injectable()
@@ -43,19 +44,19 @@ export class NestConfigService {
   }
 
   get dbPort(): number {
-    return this.configService.get<number>('DB_PORT', 5432);
+    return this.configService.get<number>('DB_PORT', 3306);
   }
 
   get dbUsername(): string {
-    return this.configService.get<string>('DB_USERNAME', 'postgres');
+    return this.configService.get<string>('DB_USERNAME', 'root');
   }
 
   get dbPassword(): string {
-    return this.configService.get<string>('DB_PASSWORD', 'postgres');
+    return this.configService.get<string>('DB_PASSWORD', 'mysql');
   }
 
   get dbDatabase(): string {
-    return this.configService.get<string>('DB_DATABASE', 'postgres');
+    return this.configService.get<string>('DB_DATABASE', 'root');
   }
 
   get dbSchema(): string {
@@ -74,10 +75,7 @@ export class NestConfigService {
   }
 
   get accessTokenExprieTimeValue(): number {
-    return this.configService.get<number>(
-      'ACCESS_TOKEN_EXPIRE_TIME_VALUE',
-      500,
-    );
+    return this.configService.get<number>('ACCESS_TOKEN_EXPIRE_TIME_VALUE', 60);
   }
 
   get accessTokenExpireTimeUnit(): OpUnitType {
@@ -103,5 +101,21 @@ export class NestConfigService {
       'JWT_SECRET',
       '9rHWkauFqOM192f02oGh2-qmw2yXfn1rBRHTvfrNaL4',
     );
+  }
+
+  get awsAccessKey(): string {
+    return this.configService.get<string>('AWS_ACCESS_KEY_ID');
+  }
+
+  get awsSecretAccessKey(): string {
+    return this.configService.get<string>('AWS_SECRET_ACCESS_KEY');
+  }
+
+  get awsS3BucketKey(): string {
+    return this.configService.get<string>('AWS_S3_BUCKET_KEY');
+  }
+
+  get awsS3BucketAcl(): string {
+    return this.configService.get<string>('AWS_S3_BUCKET_ACL', 'public-read');
   }
 }

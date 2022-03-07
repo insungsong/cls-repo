@@ -1,5 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  isUUID,
+  Length,
+} from 'class-validator';
 import { ServiceType } from '../constant/service-type';
 import { StringTransform } from '../transformer/string.transform.decorator';
 
@@ -31,6 +39,19 @@ export class RegisterUserInput {
   @Field(() => String, { nullable: false, description: '비밀번호 확인' })
   @StringTransform()
   passwordConfirm!: string;
+
+  @IsString()
+  @StringTransform()
+  @Field(() => String, { nullable: false, description: '성' })
+  firstName!: string;
+
+  @IsString()
+  @StringTransform()
+  @Field(() => String, { nullable: false, description: '이름' })
+  lastName!: string;
+
+  @Field(() => String, { nullable: true, description: '프로필 파일 id' })
+  fileId?: string;
 
   @IsNotEmpty()
   @IsEnum(ServiceType)

@@ -1,3 +1,4 @@
+import { Field, ObjectType } from '@nestjs/graphql';
 import {
   BaseEntity,
   Column,
@@ -7,12 +8,19 @@ import {
   Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
 } from 'typeorm';
+import { FileEntity } from './file.entity';
+import { SpaceEntity } from './space.entity';
 
 /**
  * CapaReferralEntity
  */
 @Entity('user')
+@ObjectType()
 export class UserEntity extends BaseEntity {
   /**
    * id
@@ -21,17 +29,14 @@ export class UserEntity extends BaseEntity {
    */
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
-    comment: '카파 유저 아이디',
+    comment: '유저 아이디',
   })
+  @Field()
   id!: string;
 
-  /**
-   * seq
-   *
-   * @description bigserial or nextval('<seq>'::regclass)
-   */
-  @Column({ name: 'seq', type: 'int8', unique: true, comment: '순차 인덱스' })
+  @Column({ name: 'seq', unique: true, comment: '순차 인덱스' })
   @Generated('increment')
+  @Field()
   seq!: number;
 
   /**
@@ -48,9 +53,26 @@ export class UserEntity extends BaseEntity {
   })
   email!: string;
 
+  @Field()
+  @Column({
+    name: 'first_name',
+    type: 'varchar',
+    comment: '성',
+  })
+  firstName!: string;
+
+  @Field()
+  @Column({
+    name: 'last_name',
+    type: 'varchar',
+    comment: '이름',
+  })
+  lastName!: string;
+
   /**
    * password
    */
+  @Field()
   @Column({
     name: 'password',
     type: 'varchar',
@@ -59,34 +81,21 @@ export class UserEntity extends BaseEntity {
   })
   password!: string;
 
-  /**
-   * lastLoginAt
-   */
+  @Field({ nullable: true })
   @Column({
-    name: 'last_login_at',
-    type: 'timestamptz',
+    name: 'file_id',
+    type: 'uuid',
     nullable: true,
-    comment: '마지막 로그인 시간',
+    comment: 'fk FileEntity#id',
   })
-  lastLoginAt?: Date | null;
-
-  /**
-   * lastLogoutAt
-   */
-  @Column({
-    name: 'last_logout_at',
-    type: 'timestamptz',
-    nullable: true,
-    comment: '마지막 로그아웃 시간',
-  })
-  lastLogoutAt?: Date | null;
+  fileId?: string;
 
   /**
    * createdAt
    */
+  @Field()
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamptz',
     comment: '생성일',
     update: false,
   })
@@ -95,10 +104,20 @@ export class UserEntity extends BaseEntity {
   /**
    * updatedAt
    */
+  @Field()
   @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamptz',
     comment: '수정일',
   })
   updatedAt!: Date;
+
+  @OneToOne(() => FileEntity, (file) => file.userFile, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'file_id', referencedColumnName: 'id' })
+  file: Promise<FileEntity>;
+
+  @ManyToMany(() => SpaceEntity, (space) => space.spaceUser)
+  spaces: Promise<SpaceEntity[]>;
 }

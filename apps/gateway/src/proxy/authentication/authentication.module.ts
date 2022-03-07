@@ -1,5 +1,5 @@
 import { CommonModule } from '@libs/common';
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { AuthenticationProxyService } from './authentication.proxy.service';
 import { AuthenticationResolver } from './authentication.resolver';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
@@ -7,7 +7,7 @@ import { NestConfigService } from '@libs/common/config/nest-config.service';
 import { AUTHENTICATION } from '@libs/common/constant';
 
 @Module({
-  imports: [CommonModule],
+  imports: [HttpModule, CommonModule],
   providers: [
     {
       provide: 'AUTHENTICATION_SERVICE',
@@ -29,6 +29,7 @@ import { AUTHENTICATION } from '@libs/common/constant';
     },
     AuthenticationProxyService,
     AuthenticationResolver,
+    NestConfigService,
   ],
 })
 export class AuthenticationModule {}
