@@ -9,6 +9,8 @@ import {
   JoinColumn,
   OneToMany,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ChatEntity } from './chat.entity';
 import { SpaceEntity } from './space.entity';
@@ -52,6 +54,19 @@ export class PostEntity extends BaseEntity {
     comment: 'Post status',
   })
   status: PostStatus;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    comment: '생성일',
+    update: false,
+  })
+  createdAt!: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    comment: '수정일',
+  })
+  updatedAt!: Date;
 
   @ManyToOne(() => SpaceEntity, (space) => space.posts, {
     onDelete: 'RESTRICT',

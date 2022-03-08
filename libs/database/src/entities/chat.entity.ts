@@ -1,5 +1,4 @@
 import { ChatStatus } from '@libs/common/constant';
-import { PostType } from '@libs/common/constant/post.type';
 import {
   Entity,
   BaseEntity,
@@ -8,6 +7,8 @@ import {
   Generated,
   JoinColumn,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { PostEntity } from './post.entity';
 
@@ -20,7 +21,7 @@ export class ChatEntity extends BaseEntity {
    */
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
-    comment: '유저 아이디',
+    comment: 'Chat 아이디',
   })
   id!: string;
 
@@ -55,6 +56,19 @@ export class ChatEntity extends BaseEntity {
     comment: 'Chat status',
   })
   status: ChatStatus;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    comment: '생성일',
+    update: false,
+  })
+  createdAt!: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    comment: '수정일',
+  })
+  updatedAt!: Date;
 
   @ManyToOne(() => PostEntity, (post) => post.chats, {
     onDelete: 'RESTRICT',

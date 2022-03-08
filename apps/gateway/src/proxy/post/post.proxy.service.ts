@@ -4,6 +4,7 @@ import { SayHelloOuput } from '@libs/common/model/say-hello.output';
 import { lastValueFrom } from 'rxjs';
 import {
   DeleteChatInput,
+  FetchChatsInput,
   RegisterChatInput,
   RegisterUserInput,
   SayHelloInput,
@@ -15,6 +16,7 @@ import { RegisterPostInput } from '@libs/common/dto/register-post.input';
 import { FetchSpacePostsInput } from '@libs/common/dto/fetch-space-posts.input';
 import { PostsOutput } from '@libs/common/model/posts.output';
 import { DeleteSpacePostInput } from '@libs/common/dto/delete-space-post.input';
+import { ChatsOutput } from '@libs/common/model/chats.output';
 
 @Injectable()
 export class PostProxyService {
@@ -37,6 +39,14 @@ export class PostProxyService {
 
     return await lastValueFrom(
       this.client.send<PostsOutput>({ cmd: 'fetchSpacePosts' }, input),
+    );
+  }
+
+  async fetchChats(input: FetchChatsInput): Promise<ChatsOutput> {
+    this.logger.debug(input);
+
+    return await lastValueFrom(
+      this.client.send<ChatsOutput>({ cmd: 'fetchChats' }, input),
     );
   }
 

@@ -4,11 +4,16 @@ import { PostType } from '@libs/common/constant/post.type';
 import { SpaceRoleStatus } from '@libs/common/constant/space-role-status.type';
 import { SpaceRoleType } from '@libs/common/constant/space-role.type';
 import { SpaceStatusType } from '@libs/common/constant/space-status.type';
-import { DeleteChatInput, RegisterChatInput } from '@libs/common/dto';
+import {
+  DeleteChatInput,
+  FetchChatsInput,
+  RegisterChatInput,
+} from '@libs/common/dto';
 import { DeleteSpacePostInput } from '@libs/common/dto/delete-space-post.input';
 import { FetchSpacePostsInput } from '@libs/common/dto/fetch-space-posts.input';
 import { RegisterPostInput } from '@libs/common/dto/register-post.input';
 import { NestException, Output } from '@libs/common/model';
+import { ChatsOutput } from '@libs/common/model/chats.output';
 import { PostsOutput } from '@libs/common/model/posts.output';
 import { UserRepository } from '@libs/database/repository';
 import { ChatRepository } from '@libs/database/repository/chat.repository';
@@ -26,6 +31,7 @@ export class PostService {
     private readonly spaceRepsitory: SpaceRepository,
     private readonly spaceRoleRepository: SpaceRoleRepository,
     private readonly postRepository: PostRepository,
+    private readonly chatRepository: ChatRepository,
   ) {
     this.logger = new Logger('PostService');
   }
@@ -72,8 +78,6 @@ export class PostService {
         userId: user.id,
       });
     }
-
-    console.log('space: ', space);
 
     if (!space) {
       throw new NestException(ErrorCode.NOT_FOUND_SPACE);
@@ -181,6 +185,55 @@ export class PostService {
     } as PostsOutput;
   }
 
+  async fetchChats(input: FetchChatsInput): Promise<ChatsOutput> {
+    const user = await this.userRepsitory.findRegisteredUserByEmail(
+      input.email,
+    );
+
+    if (!user) {
+      throw new NestException(ErrorCode.NOT_FOUND_USER);
+    }
+
+    const post = await this.postRepository.findOne({
+      id: input.postId,
+    });
+
+    if (!post) {
+      throw new NestException(ErrorCode.NOT_FOUND_POST);
+    }
+
+    const space = await this.spaceRepsitory.findOne({
+      id: post.spaceId,
+    });
+
+    if (!space) {
+      throw new NestException(ErrorCode.NOT_FOUND_SPACE);
+    }
+
+    const spaceRole = await this.spaceRoleRepository.findOne({
+      id: space.spaceRoleId,
+    });
+
+    if (!spaceRole) {
+      throw new NestException(ErrorCode.NOT_FOUND_SPACE_ROLE);
+    }
+
+    let result = null;
+    if (spaceRole.role !== SpaceRoleType.PARTICIPANT) {
+      result = await this.chatRepository.fetchChats(input.postId);
+    } else {
+      result = await this.chatRepository.fetchNotAnonymousChats(
+        input.postId,
+        user.id,
+      );
+    }
+
+    return {
+      result: ErrorCode.SUCCESS,
+      data: [...result],
+    };
+  }
+
   async deleteSpacePost(
     input: DeleteSpacePostInput,
     entityManager: EntityManager,
@@ -255,6 +308,21 @@ export class PostService {
       throw new NestException(ErrorCode.NOT_FOUND_SPACE);
     }
 
+    const spaceRoleRepository: SpaceRoleRepository =
+      entityManager.getCustomRepository<SpaceRoleRepository>(
+        SpaceRoleRepository,
+      );
+
+    const spaceRole = await spaceRoleRepository.findOne({
+      id: space.spaceRoleId,
+    });
+
+    if (input.anonymous && spaceRole.role !== SpaceRoleType.PARTICIPANT) {
+      throw new NestException(
+        ErrorCode.ADMINS_CAN_NOT_ANONYMOUSLY_POST_QUESTIONS,
+      );
+    }
+
     const postRepository: PostRepository =
       entityManager.getCustomRepository<PostRepository>(PostRepository);
 
@@ -267,9 +335,12 @@ export class PostService {
       throw new NestException(ErrorCode.NOT_FOUND_POST);
     }
 
+    //참여자니 참여자면 input.anonymous가 true로 와도 ㄱㅊ 참여자가 아니면 true로 오면 Error
+
     const chatRepository: ChatRepository =
       entityManager.getCustomRepository<ChatRepository>(ChatRepository);
 
+    //대댓글
     if (input.parentsChatId) {
       const parentChat = await chatRepository.findOne({
         id: input.parentsChatId,
@@ -289,6 +360,7 @@ export class PostService {
         }),
       );
     } else {
+      //댓글 작성
       await entityManager.save(
         chatRepository.create({
           userId: user.id,

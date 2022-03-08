@@ -3,3 +3,4 @@ export * from './register-user.input';
 export * from './register-file.input';
 export * from './register-chat.input';
 export * from './delete-chat.input';
+export * from './fetch-chats.input';

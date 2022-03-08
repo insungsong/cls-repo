@@ -1,6 +1,7 @@
 import { NestConfigModule } from '@libs/common/config/nest-config.module';
 import { DatabaseModule } from '@libs/database';
 import { UserRepository } from '@libs/database/repository';
+import { ChatRepository } from '@libs/database/repository/chat.repository';
 import { PostRepository } from '@libs/database/repository/post.repository';
 import { SpaceRoleRepository } from '@libs/database/repository/space-role.repository';
 import { SpaceRepository } from '@libs/database/repository/space.repository';
@@ -18,6 +19,7 @@ import { PostService } from './post.service';
       SpaceRepository,
       SpaceRoleRepository,
       PostRepository,
+      ChatRepository,
     ]),
   ],
   controllers: [PostController],

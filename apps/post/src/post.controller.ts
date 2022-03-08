@@ -1,8 +1,13 @@
-import { DeleteChatInput, RegisterChatInput } from '@libs/common/dto';
+import {
+  DeleteChatInput,
+  FetchChatsInput,
+  RegisterChatInput,
+} from '@libs/common/dto';
 import { DeleteSpacePostInput } from '@libs/common/dto/delete-space-post.input';
 import { FetchSpacePostsInput } from '@libs/common/dto/fetch-space-posts.input';
 import { RegisterPostInput } from '@libs/common/dto/register-post.input';
 import { Output } from '@libs/common/model';
+import { ChatsOutput } from '@libs/common/model/chats.output';
 import { PostsOutput } from '@libs/common/model/posts.output';
 import { TransactionBlock } from '@libs/common/transaction/transaction';
 import { Controller, Get } from '@nestjs/common';
@@ -29,6 +34,11 @@ export class PostController {
   @MessagePattern({ cmd: 'fetchSpacePosts' })
   async fetchSpacePosts(input: FetchSpacePostsInput): Promise<PostsOutput> {
     return await this.postService.fetchSpacePosts(input);
+  }
+
+  @MessagePattern({ cmd: 'fetchChats' })
+  async fetchChats(input: FetchChatsInput): Promise<ChatsOutput> {
+    return await this.postService.fetchChats(input);
   }
 
   @MessagePattern({ cmd: 'deleteSpacePost' })

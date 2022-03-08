@@ -1,10 +1,15 @@
 import { ServiceType } from '@libs/common/constant';
-import { DeleteChatInput, RegisterChatInput } from '@libs/common/dto';
+import {
+  DeleteChatInput,
+  FetchChatsInput,
+  RegisterChatInput,
+} from '@libs/common/dto';
 import { DeleteSpacePostInput } from '@libs/common/dto/delete-space-post.input';
 import { FetchSpacePostsInput } from '@libs/common/dto/fetch-space-posts.input';
 import { RegisterPostInput } from '@libs/common/dto/register-post.input';
 import { RegisterSpaceInput } from '@libs/common/dto/register-space.input';
 import { Output } from '@libs/common/model';
+import { ChatsOutput } from '@libs/common/model/chats.output';
 import { PostsOutput } from '@libs/common/model/posts.output';
 import { Logger } from '@nestjs/common';
 import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
@@ -39,6 +44,18 @@ export class PostResolver {
     @Args('input') input: FetchSpacePostsInput,
   ): Promise<PostsOutput> {
     return await this.postProxyService.fetchSpacePosts({
+      email: user.email,
+      ...input,
+    });
+  }
+
+  @Query(() => ChatsOutput)
+  @ScopedAuth([ServiceType.USER])
+  async fetchChats(
+    @CurrentUser() user: any,
+    @Args('input') input: FetchChatsInput,
+  ): Promise<ChatsOutput> {
+    return await this.postProxyService.fetchChats({
       email: user.email,
       ...input,
     });
