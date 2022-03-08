@@ -11,8 +11,8 @@ import { Environment, NestConfigService } from './nest-config.service';
       isGlobal: true,
       ignoreEnvFile: false,
       envFilePath: [
-        join(__dirname, '../../..', `${Environment.LOCAL}.env`),
         join(__dirname, '../../..', `${Environment.DEFAULT}.env`),
+        join(__dirname, '../../..', `${Environment.PRODUCTION}.env`),
       ],
     }),
   ],

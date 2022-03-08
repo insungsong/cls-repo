@@ -19,7 +19,7 @@ import { StrategyModule } from './strategy/strategy.module';
       useFactory: (config: NestConfigService) => ({
         path: 'v1/graphql',
         autoSchemaFile: 'schema.gql',
-        playground: config.nodeEnv === Environment.DEFAULT ? true : false,
+        playground: config.nodeEnv === Environment.PRODUCTION ? false : true,
         context: async ({ req, connection }) => {
           if (connection) {
             return {

@@ -6,7 +6,6 @@ import { OpUnitType } from 'dayjs';
 
 export enum Environment {
   DEFAULT = '',
-  LOCAL = 'local',
   PRODUCTION = 'PRODUCTION',
 }
 
@@ -16,7 +15,10 @@ export class NestConfigService {
 
   @IsEnum(Environment)
   get nodeEnv(): Environment {
-    return this.configService.get<Environment>('NODE_ENV', Environment.DEFAULT);
+    return this.configService.get<Environment>(
+      'NODE_ENV',
+      Environment.PRODUCTION,
+    );
   }
 
   get rabbitmqProto(): string {
